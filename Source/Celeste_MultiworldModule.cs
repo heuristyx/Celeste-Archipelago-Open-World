@@ -1,10 +1,10 @@
-﻿using System;
-using Celeste.Mod.Celeste_Multiworld.Aesthetics;
+﻿using Celeste.Mod.Celeste_Multiworld.Aesthetics;
 using Celeste.Mod.Celeste_Multiworld.General;
 using Celeste.Mod.Celeste_Multiworld.Items;
 using Celeste.Mod.Celeste_Multiworld.Items.Traps;
 using Celeste.Mod.Celeste_Multiworld.Locations;
 using Celeste.Mod.Celeste_Multiworld.UI;
+using System;
 
 namespace Celeste.Mod.Celeste_Multiworld;
 
@@ -13,13 +13,13 @@ public class Celeste_MultiworldModule : EverestModule
     public static Celeste_MultiworldModule Instance { get; private set; }
 
     public override Type SettingsType => typeof(Celeste_MultiworldModuleSettings);
-    public static Celeste_MultiworldModuleSettings Settings => (Celeste_MultiworldModuleSettings) Instance._Settings;
+    public static Celeste_MultiworldModuleSettings Settings => (Celeste_MultiworldModuleSettings)Instance._Settings;
 
     public override Type SessionType => typeof(Celeste_MultiworldModuleSession);
-    public static Celeste_MultiworldModuleSession Session => (Celeste_MultiworldModuleSession) Instance._Session;
+    public static Celeste_MultiworldModuleSession Session => (Celeste_MultiworldModuleSession)Instance._Session;
 
     public override Type SaveDataType => typeof(Celeste_MultiworldModuleSaveData);
-    public static Celeste_MultiworldModuleSaveData SaveData => (Celeste_MultiworldModuleSaveData) Instance._SaveData;
+    public static Celeste_MultiworldModuleSaveData SaveData => (Celeste_MultiworldModuleSaveData)Instance._SaveData;
 
     #region Hooks
     modMainMenu menu = new modMainMenu();

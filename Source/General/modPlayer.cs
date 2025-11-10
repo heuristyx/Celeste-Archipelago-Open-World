@@ -1,11 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using Celeste.Mod.Celeste_Multiworld.UI;
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Celeste.Mod.Celeste_Multiworld.UI;
 
 namespace Celeste.Mod.Celeste_Multiworld.General
 {

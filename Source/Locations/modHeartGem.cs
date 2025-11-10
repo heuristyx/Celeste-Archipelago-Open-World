@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
 namespace Celeste.Mod.Celeste_Multiworld.Locations
 {
@@ -14,13 +9,17 @@ namespace Celeste.Mod.Celeste_Multiworld.Locations
             On.Celeste.HeartGem.Collect += modHeartGem_Collect;
             On.Celeste.HeartGem.SkipFakeHeartCutscene += modHeartGem_SkipFakeHeartCutscene;
             On.Celeste.Level.RegisterAreaComplete += modLevel_RegisterAreaComplete;
+            On.Celeste.SaveData.RegisterHeartGem += SaveData_RegisterHeartGem;
         }
+
+
 
         public override void Unload()
         {
             On.Celeste.HeartGem.Collect -= modHeartGem_Collect;
             On.Celeste.HeartGem.SkipFakeHeartCutscene -= modHeartGem_SkipFakeHeartCutscene;
             On.Celeste.Level.RegisterAreaComplete -= modLevel_RegisterAreaComplete;
+            On.Celeste.SaveData.RegisterHeartGem -= SaveData_RegisterHeartGem;
         }
 
         private static void modHeartGem_Collect(On.Celeste.HeartGem.orig_Collect orig, HeartGem self, Player player)
@@ -95,6 +94,15 @@ namespace Celeste.Mod.Celeste_Multiworld.Locations
                 string AP_ID = $"{SaveData.Instance.CurrentSession_Safe.Area.ID}_{(int)SaveData.Instance.CurrentSession_Safe.Area.Mode}_Clear";
                 Celeste_MultiworldModule.SaveData.LevelClearLocations.Add(AP_ID);
             }
+        }
+
+        private void SaveData_RegisterHeartGem(On.Celeste.SaveData.orig_RegisterHeartGem orig, SaveData self, AreaKey area)
+        {
+            orig(self, area);
+
+            Session session = self.CurrentSession_Safe;
+            session.HeartGem = false;
+            self.Areas_Safe[session.Area.ID].Modes[(int)session.Area.Mode].HeartGem = false;
         }
     }
 }

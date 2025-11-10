@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Celeste.Mod.Celeste_Multiworld.Locations
+﻿namespace Celeste.Mod.Celeste_Multiworld.Locations
 {
     public class modStrawberry : modLocationBase
     {
@@ -55,8 +49,17 @@ namespace Celeste.Mod.Celeste_Multiworld.Locations
             orig(self);
             string strawberryString = $"{SaveData.Instance.CurrentSession_Safe.Area.ID}_{(int)SaveData.Instance.CurrentSession_Safe.Area.Mode}_{self.ID}";
 
-            Celeste_MultiworldModule.SaveData.StrawberryLocations.Add(strawberryString);
+            //Celeste_MultiworldModule.SaveData.StrawberryLocations.Add(strawberryString);
             Logger.Verbose("AP", strawberryString);
+
+            // Undo any saving/data storage related to the berries
+            // Safest way to do it... probably
+            Session session = SaveData.Instance.CurrentSession_Safe;
+            session.DoNotLoad.Remove(self.ID);
+            session.Strawberries.Remove(self.ID);
+
+            AreaModeStats stats = SaveData.Instance.Areas_Safe[session.Area.ID].Modes[(int)session.Area.Mode];
+            stats.Strawberries.Remove(self.ID);
         }
 
         private static void modSaveData_AddStrawberry_AreaKey_EntityID_bool(On.Celeste.SaveData.orig_AddStrawberry_AreaKey_EntityID_bool orig, SaveData self, AreaKey area, EntityID strawberry, bool golden)

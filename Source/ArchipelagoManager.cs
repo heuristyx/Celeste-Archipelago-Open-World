@@ -1,27 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-
-using Archipelago.MultiClient.Net;
+﻿using Archipelago.MultiClient.Net;
 using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
+using Archipelago.MultiClient.Net.Converters;
 using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Exceptions;
 using Archipelago.MultiClient.Net.Helpers;
-using Archipelago.MultiClient.Net.Packets;
-using Archipelago.MultiClient.Net.Models;
 using Archipelago.MultiClient.Net.MessageLog.Messages;
+using Archipelago.MultiClient.Net.Models;
+using Archipelago.MultiClient.Net.Packets;
 using Microsoft.Xna.Framework;
-using M_Color = Microsoft.Xna.Framework.Color;
-using Microsoft.Xna.Framework.Graphics;
-using Newtonsoft.Json.Linq;
-using System.Reflection;
-using System.Net.Sockets;
-using Archipelago.MultiClient.Net.Converters;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using M_Color = Microsoft.Xna.Framework.Color;
 
 
 
@@ -133,7 +128,7 @@ namespace Celeste.Mod.Celeste_Multiworld
                 try
                 {
                     CheckReceivedItemQueue();
-                    CheckLocationsToSend();
+                    //CheckLocationsToSend(); // Disable sending checks since we don't save berries anymore
                     HandleCollectedLocations();
 
                     Level level = (Monocle.Engine.Scene as Level);
@@ -700,99 +695,99 @@ namespace Celeste.Mod.Celeste_Multiworld
                 switch (item.ItemId)
                 {
                     case 0xCA10000:
-                    {
-                        Celeste_MultiworldModule.SaveData.Strawberries += 1;
-                        break;
-                    }
+                        {
+                            Celeste_MultiworldModule.SaveData.Strawberries += 1;
+                            break;
+                        }
                     case 0xCA10001:
-                    {
-                        Celeste_MultiworldModule.SaveData.Raspberries += 1;
-                        break;
-                    }
+                        {
+                            Celeste_MultiworldModule.SaveData.Raspberries += 1;
+                            break;
+                        }
                     case 0xCA10010:
-                    {
-                        Celeste_MultiworldModule.SaveData.GoalItem = true;
-                        break;
-                    }
+                        {
+                            Celeste_MultiworldModule.SaveData.GoalItem = true;
+                            break;
+                        }
                     case long id when id >= 0xCA10020 && id < 0xCA10050:
-                    {
-                        if (index >= this.ServerItemsRcv)
                         {
-                            Items.Traps.TrapManager.Instance.AddTrapToQueue((Items.Traps.TrapType)(id - 0xCA10000), prettyMessage);
+                            if (index >= this.ServerItemsRcv)
+                            {
+                                Items.Traps.TrapManager.Instance.AddTrapToQueue((Items.Traps.TrapType)(id - 0xCA10000), prettyMessage);
+                            }
+                            break;
                         }
-                        break;
-                    }
                     case long id when id >= 0xCA11000 && id < 0xCA12000:
-                    {
-                        Celeste_MultiworldModule.SaveData.CassetteItems[id] = true;
-
-                        if (audioGuard < 3)
                         {
-                            audioGuard++;
-                            Audio.Play(SFX.game_gen_cassette_get);
-                        }
-                        break;
-                    }
-                    case long id when id >= 0xCA13000 && id < 0xCA14000:
-                    {
-                        string newPhrase = UI.modJournal.Poems[ChosenPoem][(int)(id - 0xCA13000)];
-                        if (!Celeste_MultiworldModule.SaveData.Poem.Contains(newPhrase))
-                        {
-                            Celeste_MultiworldModule.SaveData.Poem.Add(newPhrase);
+                            Celeste_MultiworldModule.SaveData.CassetteItems[id] = true;
 
                             if (audioGuard < 3)
                             {
                                 audioGuard++;
-                                Audio.Play(SFX.ui_postgame_crystalheart);
+                                Audio.Play(SFX.game_gen_cassette_get);
                             }
+                            break;
                         }
-                        break;
-                    }
+                    case long id when id >= 0xCA13000 && id < 0xCA14000:
+                        {
+                            string newPhrase = UI.modJournal.Poems[ChosenPoem][(int)(id - 0xCA13000)];
+                            if (!Celeste_MultiworldModule.SaveData.Poem.Contains(newPhrase))
+                            {
+                                Celeste_MultiworldModule.SaveData.Poem.Add(newPhrase);
+
+                                if (audioGuard < 3)
+                                {
+                                    audioGuard++;
+                                    Audio.Play(SFX.ui_postgame_crystalheart);
+                                }
+                            }
+                            break;
+                        }
                     case long id when id >= 0xCA14000 && id < 0xCA15000:
-                    {
-                        Items.CheckpointItemData cp_data = Items.APItemData.CheckpointData[id];
-                        SaveData.Instance.Areas_Safe[cp_data.Area].Modes[cp_data.Mode].Checkpoints.Add(cp_data.Room);
-
-                        if (audioGuard < 3)
                         {
-                            audioGuard++;
-                            Audio.Play(SFX.game_07_checkpointconfetti);
+                            Items.CheckpointItemData cp_data = Items.APItemData.CheckpointData[id];
+                            SaveData.Instance.Areas_Safe[cp_data.Area].Modes[cp_data.Mode].Checkpoints.Add(cp_data.Room);
+
+                            if (audioGuard < 3)
+                            {
+                                audioGuard++;
+                                Audio.Play(SFX.game_07_checkpointconfetti);
+                            }
+                            break;
                         }
-                        break;
-                    }
                     case long id when id >= 0xCA16000 && id < 0xCA16A00:
-                    {
-                        Celeste_MultiworldModule.SaveData.KeyItems[id] = true;
-
-                        if (audioGuard < 3)
                         {
-                            audioGuard++;
-                            Audio.Play(SFX.game_gen_key_get);
+                            Celeste_MultiworldModule.SaveData.KeyItems[id] = true;
+
+                            if (audioGuard < 3)
+                            {
+                                audioGuard++;
+                                Audio.Play(SFX.game_gen_key_get);
+                            }
+                            break;
                         }
-                        break;
-                    }
                     case long id when id >= 0xCA16A00 && id < 0xCA17000:
-                    {
-                        Celeste_MultiworldModule.SaveData.GemItems[id] = true;
-
-                        if (audioGuard < 3)
                         {
-                            audioGuard++;
-                            Audio.Play(SFX.game_07_gem_get);
+                            Celeste_MultiworldModule.SaveData.GemItems[id] = true;
+
+                            if (audioGuard < 3)
+                            {
+                                audioGuard++;
+                                Audio.Play(SFX.game_07_gem_get);
+                            }
+                            break;
                         }
-                        break;
-                    }
                     case long id when id >= 0xCA12000 && id < 0xCA12030:
-                    {
-                        Celeste_MultiworldModule.SaveData.Interactables[id] = true;
-
-                        if (audioGuard < 3)
                         {
-                            audioGuard++;
-                            Audio.Play(SFX.game_gen_secret_revealed);
+                            Celeste_MultiworldModule.SaveData.Interactables[id] = true;
+
+                            if (audioGuard < 3)
+                            {
+                                audioGuard++;
+                                Audio.Play(SFX.game_gen_secret_revealed);
+                            }
+                            break;
                         }
-                        break;
-                    }
                 }
 
                 Celeste_MultiworldModule.SaveData.ItemRcv = index + 1;
@@ -1003,7 +998,7 @@ namespace Celeste.Mod.Celeste_Multiworld
 
                     Celeste_MultiworldModule.SaveData.StrawberryLocations.Add(strawberryLocString);
 
-                    string[] area_mode_levelEntityID = strawberryLocString.Split(new char[]{'_'}, 3);
+                    string[] area_mode_levelEntityID = strawberryLocString.Split(new char[] { '_' }, 3);
                     int area = Int32.Parse(area_mode_levelEntityID[0]);
                     int mode = Int32.Parse(area_mode_levelEntityID[1]);
                     string[] level_EntityID = area_mode_levelEntityID[2].Split(":");
@@ -1042,8 +1037,7 @@ namespace Celeste.Mod.Celeste_Multiworld
                     return;
                 }
 
-                BouncePacket bouncePacket = new BouncePacket
-                {
+                BouncePacket bouncePacket = new BouncePacket {
                     Tags = new List<string> { "TrapLink" },
                     Data = new Dictionary<string, JToken>
                     {

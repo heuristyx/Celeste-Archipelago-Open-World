@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Monocle;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Celeste.Mod.Celeste_Multiworld.Locations
 {
@@ -25,12 +22,14 @@ namespace Celeste.Mod.Celeste_Multiworld.Locations
         {
             On.Celeste.SummitGem.OnPlayer += modSummitGem_OnPlayer;
             On.Celeste.SummitGemManager.Routine += modSummitGemManager_Routine;
+            On.Celeste.SummitGem.SmashRoutine += SummitGem_SmashRoutine;
         }
 
         public override void Unload()
         {
             On.Celeste.SummitGem.OnPlayer -= modSummitGem_OnPlayer;
             On.Celeste.SummitGemManager.Routine -= modSummitGemManager_Routine;
+            On.Celeste.SummitGem.SmashRoutine -= SummitGem_SmashRoutine;
         }
 
         private static void modSummitGem_OnPlayer(On.Celeste.SummitGem.orig_OnPlayer orig, SummitGem self, Player player)
@@ -150,6 +149,21 @@ namespace Celeste.Mod.Celeste_Multiworld.Locations
                 heart = null;
             }
             yield break;
+        }
+
+        private IEnumerator SummitGem_SmashRoutine(On.Celeste.SummitGem.orig_SmashRoutine orig, SummitGem self, Player player, Level level)
+        {
+            IEnumerator origIEnumerator = orig(self, player, level);
+
+            while (origIEnumerator.MoveNext())
+            {
+                yield return origIEnumerator.Current;
+            }
+
+            Session session = SaveData.Instance.CurrentSession_Safe;
+            session.SummitGems[self.GemID] = false;
+            session.DoNotLoad.Remove(self.GID);
+            SaveData.Instance.SummitGems[self.GemID] = false;
         }
     }
 }

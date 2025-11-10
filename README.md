@@ -1,4 +1,6 @@
-# Celeste Archipelago Open World
+# Celeste Archipelago Open World (Item Toggles)
+
+This is a fork of Celeste (Open World) with the ability to toggle items in the options menu. It also disables checks, and obtained items respawn when a room is reloaded (e.g. by retrying).
 
 ## What is this game?
 

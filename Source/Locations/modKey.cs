@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
 namespace Celeste.Mod.Celeste_Multiworld.Locations
 {
@@ -44,13 +39,19 @@ namespace Celeste.Mod.Celeste_Multiworld.Locations
             self.Collidable = false;
             self.Visible = false;
             string AP_ID = $"{SaveData.Instance.CurrentSession_Safe.Area.ID}_{(int)SaveData.Instance.CurrentSession_Safe.Area.Mode}_{self.ID}";
-            Celeste_MultiworldModule.SaveData.KeyLocations.Add(AP_ID);
+            //Celeste_MultiworldModule.SaveData.KeyLocations.Add(AP_ID);
             Logger.Verbose("AP", AP_ID);
 
             if (self.nodes != null && self.nodes.Length >= 2)
             {
                 self.Add(new Monocle.Coroutine(self.NodeRoutine(player), true));
             }
+
+            // Undo any saving/data storage related to the key
+            // Safest way to do it... probably
+            Session session = SaveData.Instance.CurrentSession_Safe;
+            session.DoNotLoad.Remove(self.ID);
+            session.Keys.Remove(self.ID);
         }
     }
 }
